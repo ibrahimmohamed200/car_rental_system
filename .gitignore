@@ -1,0 +1,53 @@
+# Compiled class files
+*.class
+
+# Log files
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+replay_pid*
+
+# -------- Specific to Car Rental Project -------- #
+
+# NetBeans specific (Keep nbproject/, but ignore personal settings)
+nbproject/private/
+nbproject/project.xml.user
+nbproject/project.properties.user
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+
+# SENSITIVE FILES - NEVER COMMIT
+# The SQLite database should never be committed as it may contain PII (Customer info), user data, and binary diffs bloat Git.
+*.db
+carrental.db
+carrental.db-journal
+
+# Compiled Outputs (Optional but highly recommended to exclude)
+/build/
+
+# Dependency tracking
+/.classpath
