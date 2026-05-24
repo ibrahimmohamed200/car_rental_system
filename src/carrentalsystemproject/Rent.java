@@ -16,7 +16,11 @@ public class Rent extends javax.swing.JFrame {
 
     public Rent() {
         initComponents();
-        LoadCarID();
+        // Disable fields first, before LoadCarID() runs.
+        // LoadCarID() triggers combocarIDActionPerformed which will re-enable
+        // them if the selected car is available. If setEnabled(false) came
+        // after LoadCarID(), it would override those enables — leaving fields
+        // permanently locked no matter which car was selected.
         txtdate.setDateFormatString("yyyy/MM/dd");
         txtdue.setDateFormatString("yyyy/MM/dd");
         txtcust_id.setEnabled(false);
@@ -24,6 +28,7 @@ public class Rent extends javax.swing.JFrame {
         txtfee.setEnabled(false);
         txtdate.setEnabled(false);
         txtdue.setEnabled(false);
+        LoadCarID();
     }
 
     Connection con;
@@ -35,22 +40,27 @@ public class Rent extends javax.swing.JFrame {
     PreparedStatement pst4;
 
     public void LoadCarID() {
+        // Use local variables to avoid shared state being overwritten
+        // when combocarIDActionPerformed fires during addItem() calls
+        Connection localCon = null;
+        PreparedStatement localPst = null;
+        ResultSet localRs = null;
         try {
-            con = DBConncetion.connectOnlineDB();
-            if (con == null) {
+            localCon = DBConncetion.connectOnlineDB();
+            if (localCon == null) {
                 return;
             }
-            pst1 = con.prepareStatement("Select * from Group16_CarRegistrationTable");
-            rs = pst1.executeQuery();
+            localPst = localCon.prepareStatement("Select * from Group16_CarRegistrationTable");
+            localRs = localPst.executeQuery();
             combocarID.removeAllItems();
 
-            while (rs.next()) {
-                combocarID.addItem(rs.getString("CarRegNo"));
+            while (localRs.next()) {
+                combocarID.addItem(localRs.getString("CarRegNo"));
             }
 
-            rs.close();
-            pst1.close();
-            con.close();
+            localRs.close();
+            localPst.close();
+            localCon.close();
 
         } catch (SQLException ex) {
             Logger.getLogger(Rent.class.getName()).log(Level.SEVERE, null, ex);
@@ -79,7 +89,7 @@ public class Rent extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         txtavl = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         Rents.setBorder(javax.swing.BorderFactory.createTitledBorder("Rents"));
 
@@ -259,9 +269,11 @@ public class Rent extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "CarID NOT FOUND");
             } else {
                 String aval = rs.getString("Available");
-                txtavl.setText(aval.trim());
+                // Null-safe: avoid NullPointerException if DB field is null
+                String avalTrimmed = (aval != null) ? aval.trim() : "";
+                txtavl.setText(avalTrimmed);
 
-                if (aval.equals("Yes")) {
+                if ("Yes".equals(avalTrimmed)) {
                     txtcust_id.setEnabled(true);
                     txtcustname.setEnabled(true);
                     txtfee.setEnabled(true);

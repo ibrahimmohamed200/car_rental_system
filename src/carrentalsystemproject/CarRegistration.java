@@ -116,7 +116,7 @@ public final class CarRegistration extends javax.swing.JFrame {
         txtmodel = new javax.swing.JTextField();
         comavl = new javax.swing.JComboBox<>();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         CarRegistrationTable.setAutoCreateRowSorter(true);
         CarRegistrationTable.setModel(new javax.swing.table.DefaultTableModel(
